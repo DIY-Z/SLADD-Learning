@@ -216,10 +216,10 @@ def train_epoch(gpu, model, train_data_loader, epoch, cur_acc,
 
 
 
-def train(gpu,args):
+def train(gpu,args):  #这里train有两个参数,第一个参数指进程id号(它从0开始,id为0的进程称为主进程)
     print('start training')
-    rank = args.nr * args.gpus + gpu
-    dist.init_process_group(backend='nccl', init_method='env://', world_size=args.world_size, rank=rank)
+    rank = args.nr * args.gpus + gpu   #这里用rank记录进程id号(从前面代码中看到args.nr默认为0)
+    dist.init_process_group(backend='nccl', init_method='env://', world_size=args.world_size, rank=rank)  #world_size指进程总数
     if args.manualSeed is None:
         args.manualSeed = random.randint(1, 10000)
     print("Random Seed: ", args.manualSeed) 
@@ -303,7 +303,7 @@ def main():
     opt.world_size = opt.gpus * opt.nodes                #
     os.environ['MASTER_ADDR'] = ip                       #
     os.environ['MASTER_PORT'] = opt.masterport           #
-    mp.spawn(train, nprocs=opt.gpus, args=(opt,))        #
+    mp.spawn(train, nprocs=opt.gpus, args=(opt,)) #sp.spawn()的第二个参数是开启的进程个数.执行完这一步后python会建立多个进程,然后每个进程都会执行train函数
 
 if __name__ == '__main__':
     main()
