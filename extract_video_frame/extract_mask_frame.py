@@ -43,6 +43,7 @@ def extract_frame_from_fake(file_name, frame_total):
         if(os.path.lexists('{}'.format(process_path+file_name+'.mp4'))):   #判断要取帧的视频是否存在
             #print('{}'.format(process_path+file_name+'.mp4') + '存在')
             if(not os.listdir(target_path+file_name)):  #判断该目录是否为空,若为空则取帧并存放文件
+                # print(target_path+file_name+'不存在')
                 #将指定的视频进行取帧并存放到对应的位置
                 data_path = process_path + file_name + '.mp4'
                 output_path = target_path + file_name
@@ -57,6 +58,6 @@ for mode in modes:
         json_list = json.load(json_file)
         #print(type(json_list), len(json_list),split_json_path)
         for item in json_list:
-            file_name = item[0] + '_' + item[1]
-            extract_frame_from_fake(file_name,required_frame_num[mode])
-    print(mode+' complete')
+            file_name = item[0] + '_' + item[1] #TODO 其实item[1] + '_' + item[0]也是一个文件,不过它是另一个文件
+            # extract_frame_from_fake(file_name,required_frame_num[mode])   #需要时解除这行注释
+    # print(mode+' complete')
