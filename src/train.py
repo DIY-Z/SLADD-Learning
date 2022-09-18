@@ -23,7 +23,7 @@ import torch.multiprocessing as mp
 import torch.distributed as dist
 
 dset = ['FF-DF', 'FF-NT', 'FF-F2F', 'FF-FS', 'ALL']
-os.environ['CUDA_VISIBLE_DEVICES']='0,1,2,3,4,5,6,7'
+os.environ['CUDA_VISIBLE_DEVICES']='0'
 parser = argparse.ArgumentParser()
 
 # model setting
@@ -38,7 +38,7 @@ parser.add_argument('--train_batchSize', type=int,
 parser.add_argument('--eval_batchSize', type=int,
                     default=32, help='eval batch size')
 parser.add_argument('--workers', type=int,
-                    help='number of data loading workers', default=8)
+                    help='number of data loading workers', default=6)
 parser.add_argument('--resolution', type=int, default=256,
                     help='the resolution of the output image to network')
 parser.add_argument('--test_batchSize', type=int,
@@ -68,15 +68,15 @@ parser.add_argument("--start_epoch", default=0, type=int,
 
 # for distributed parallel 
 parser.add_argument('-n', '--nodes', default=1,
-                    type=int, metavar='N')
+                    type=int, metavar='N')   #nodes指机器的个数
 parser.add_argument('-g', '--gpus', default=1, type=int,
-                    help='number of gpus per node')
+                    help='number of gpus per node')  #gpus指每台机器中显卡个数
 parser.add_argument('-nr', '--nr', default=0, type=int,
-                    help='ranking within the nodes')
+                    help='ranking within the nodes') #nr指当前是第几台机器,它从0开始
 parser.add_argument('-mp', '--masterport', default='8888', type=str,
-                    help='ranking within the nodes')
-parser.add_argument('--ngpu', type=int, default=8,
-                    help='number of GPUs to use')
+                    help='ranking within the nodes')  #masterport指master进程的一个端口
+parser.add_argument('--ngpu', type=int, default=1,
+                    help='number of GPUs to use')   #ngpu指要使用的GPU个数
 
 parser.add_argument('--logdir', default='./logs',
                     help='folder to output images')
@@ -254,6 +254,7 @@ def train(gpu,args):  #这里train有两个参数,第一个参数指进程id号(
     train_set = FaceForensicsDataset(
               dataset=args.dset, mode='train', res=args.resolution, train=True)
 
+    #num_replicas是指参与分布式训练的进程数目
     train_sampler = torch.utils.data.distributed.DistributedSampler(train_set,
                                                                     num_replicas=args.world_size,
                                                                     rank=rank)
@@ -300,10 +301,12 @@ def main():
     ip = socket.gethostbyname(hostname)
     opt = parser.parse_args()
     print(opt)
-    opt.world_size = opt.gpus * opt.nodes                #
-    os.environ['MASTER_ADDR'] = ip                       #
+    opt.world_size = opt.gpus * opt.nodes                # 获得总进程数
+    os.environ['MASTER_ADDR'] = ip                       # master进程就是rank=0的进程,master_address指master进程的网络地址,master_port是master进程的一个端口,它用于通讯
     os.environ['MASTER_PORT'] = opt.masterport           #
-    mp.spawn(train, nprocs=opt.gpus, args=(opt,)) #sp.spawn()的第二个参数是开启的进程个数.执行完这一步后python会建立多个进程,然后每个进程都会执行train函数
+    # sp.spawn()的第二个参数nprocs是开启的进程个数.执行完这一步后python会建立多个进程,然后每个进程都会执行train函数
+    # 最后一个参数args用于将所赋给的参数传递给第一个参数train函数
+    mp.spawn(train, nprocs=opt.gpus, args=(opt,)) 
 
 if __name__ == '__main__':
     main()
