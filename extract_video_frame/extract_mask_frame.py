@@ -42,7 +42,7 @@ def extract_frame_from_fake(file_name, frame_total):
             os.mkdir(target_path + file_name)
         if(os.path.lexists('{}'.format(process_path+file_name+'.mp4'))):   #判断要取帧的视频是否存在
             #print('{}'.format(process_path+file_name+'.mp4') + '存在')
-            if(not os.path.getsize(target_path+file_name)):  #判断该目录是否为空
+            if(not os.listdir(target_path+file_name)):  #判断该目录是否为空,若为空则取帧并存放文件
                 #将指定的视频进行取帧并存放到对应的位置
                 data_path = process_path + file_name + '.mp4'
                 output_path = target_path + file_name

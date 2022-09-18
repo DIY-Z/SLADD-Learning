@@ -43,16 +43,15 @@ def extract_frame_from_fake(file_name, frame_total):
     for i, j in enumerate(origin_manipulation):
         process_path = 'D:\FaceForensics++\manipulated_sequences\\' + j + '\\c23\\videos\\'
         target_path = 'D:\ProjectDevelop\SLADD-Learning\data\FF\image\\'+target_manipulation[i]+'\\'
-        if not os.path.exists(target_path + file_name):  #判断是否有该目录
+        if not os.path.exists(target_path + file_name):  #判断是否有该目录,如果没有则创建目录
             os.mkdir(target_path + file_name)
         if(os.path.lexists('{}'.format(process_path+file_name+'.mp4'))):   #判断要取帧的视频是否存在
-            #print('{}'.format(process_path+file_name+'.mp4') + '存在')
-            if(not os.path.getsize(target_path+file_name)):  #判断该目录是否为空
+            # print('{}'.format(process_path+file_name+'.mp4') + '存在')
+            if(not os.listdir(target_path+file_name)):  #判断该目录是否为空,os.listdir返回指定目录下的文件或文件夹名字的列表,若为空,则返回[]
                 #将指定的视频进行取帧并存放到对应的位置
                 data_path = process_path + file_name + '.mp4'
                 output_path = target_path + file_name
                 extract_frames(data_path,output_path,frame_total)   #需要时解除这行注释
-
 
 
 modes = ['train','test','valid']
@@ -65,7 +64,7 @@ for mode in modes:
         #print(type(json_list), len(json_list),split_json_path)
         for item in json_list:
             file_name = item[0] + '_' + item[1]
-    #         extract_frame_from_fake(file_name,required_frame_num[mode])   #需要使用时再解除这行注释
+            extract_frame_from_fake(file_name,required_frame_num[mode])   #需要使用时再解除这行注释
     # print(mode+' complete')
 
 
@@ -82,5 +81,5 @@ for path_without_suffix in paths_without_suffix:
     #然后将指定的视频进行取帧并存放到对应的位置
     data_path = process_path + path_without_suffix + '.mp4'
     output_path = target_path + path_without_suffix
-    extract_frames(data_path,output_path,30)    #需要时解除这两行注释
-print('true data extract, complete')
+#     extract_frames(data_path,output_path,30)    #需要时解除这两行注释
+# print('true data extract, complete')
