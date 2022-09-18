@@ -369,7 +369,7 @@ class TransferModel(nn.Module):
                     model.fc = model.last_linear
                     del model.last_linear
                     state_dict = torch.load(
-                        './weights/xception-b5690688.pth')
+                        '/home/featurize/work/SLADD-Learning/pretrained/xception-b5690688.pth')
                     print('Loaded pretrained model (ImageNet)....')
                     for name, weights in state_dict.items():
                         if 'pointwise' in name:

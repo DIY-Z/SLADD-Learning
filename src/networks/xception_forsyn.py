@@ -370,7 +370,7 @@ class TransferModel(nn.Module):
                     #model.fc = model.last_linear
                     #del model.last_linear
                     state_dict = torch.load(
-                        './weights/xception-b5690688.pth')
+                        '/home/featurize/work/SLADD-Learning/pretrained/xception-b5690688.pth')
                     print('Loaded pretrained model (ImageNet)....')
                     for name, weights in state_dict.items():
                         if 'pointwise' in name:
@@ -392,7 +392,7 @@ class TransferModel(nn.Module):
             or modelchoice == 'resnext' or modelchoice == 'inceptionv3' \
             or modelchoice == 'efficientB5'or modelchoice == 'efficientB7':
             
-            self.model = RPModel(modelchoice,num_out_classes,dropout)
+            self.model = RPModel(modelchoice,num_out_classes=2,dropout=0.5)
             
         else:
             raise Exception('Choose valid model, e.g. resnet50')

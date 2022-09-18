@@ -8,7 +8,7 @@ from torch.utils import data
 from torchvision import transforms as T
 import dlib
 detector = dlib.get_frontal_face_detector()
-predictor = dlib.shape_predictor('./weights/shape_predictor_68_face_landmarks.dat')
+predictor = dlib.shape_predictor('/home/featurize/work/SLADD-Learning/pretrained/shape_predictor_68_face_landmarks.dat')
 
 def load_rgb(file_path, size=256):
     img = cv2.imread(file_path)
@@ -26,17 +26,17 @@ def load_mask(file_path, size=256):
 
 
 class FaceForensicsDataset(data.Dataset):
-    data_root = './data/FF/image/'
-    mask_root = './data/FF/mask/'
+    data_root = '/home/featurize/data/FF/image/'
+    mask_root = '/home/featurize/data/FF/mask/'
 
     data_list = {
-        'test': './data/FF/config/test.json',
-        'train': './data/FF/config/train.json',
-        'eval': './data/FF/config/eval.json'
+        'test': '/home/featurize/data/FF/config/test.json',
+        'train': '/home/featurize/data/FF/config/train.json',
+        'eval': '/home/featurize/data/FF/config/eval.json'
     }
 
     # frames = {'test': 100, 'eval': 100, 'train': 270}
-    frames = {'test': 25, 'eval': 10, 'train': 270}
+    frames = {'test': 25, 'eval': 10, 'train': 30}
 
     def __init__(self, dataset='FF-DF', mode='test', res=256, train=True,
                  sample_num=None):
