@@ -47,7 +47,7 @@ def extract_frame_from_fake(file_name, frame_total):
                 #将指定的视频进行取帧并存放到对应的位置
                 data_path = process_path + file_name + '.mp4'
                 output_path = target_path + file_name
-                extract_frames(data_path,output_path,frame_total)   #需要时解除这行注释
+                #extract_frames(data_path,output_path,frame_total)   #需要时解除这行注释
 
 modes = ['train','test','valid']
 required_frame_num = {'test': 25, 'valid': 10, 'train': 30}  #低配版,正常来讲这里应该是25,10,270
@@ -59,5 +59,7 @@ for mode in modes:
         #print(type(json_list), len(json_list),split_json_path)
         for item in json_list:
             file_name = item[0] + '_' + item[1] #TODO 其实item[1] + '_' + item[0]也是一个文件,不过它是另一个文件
-            # extract_frame_from_fake(file_name,required_frame_num[mode])   #需要时解除这行注释
-    # print(mode+' complete')
+            extract_frame_from_fake(file_name,required_frame_num[mode])   #需要时解除这行注释
+            another_file_name = item[1] + '_' + item[0]
+            extract_frame_from_fake(another_file_name,required_frame_num[mode])   #需要时解除这行注释
+    print(mode+' complete')
